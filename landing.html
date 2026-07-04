@@ -3,71 +3,84 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>YouTube爆款标题生成器 - DeepSeek驱动</title>
+<title>YouTube创作者工具箱 - AI驱动的YouTube内容创作工具</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:#0a0a0f;color:#fff;min-height:100vh}
-.hero{text-align:center;padding:80px 20px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%)}
-.hero h1{font-size:3rem;margin-bottom:20px;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{font-size:1.2rem;color:#a0a0a0;max-width:600px;margin:0 auto 40px}
-.cta{background:linear-gradient(135deg,#667eea,#764ba2);padding:16px 48px;border:none;border-radius:50px;color:#fff;font-size:1.1rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
-.features{padding:60px 20px;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px}
-.feature{background:#1a1a2e;border-radius:16px;padding:30px;text-align:center}
-.feature-icon{font-size:3rem;margin-bottom:20px}
-.feature h3{font-size:1.3rem;margin-bottom:10px}
-.feature p{color:#a0a0a0}
-.pricing{padding:60px 20px;background:#1a1a2e;text-align:center}
-.price{font-size:4rem;font-weight:700;margin:20px 0}
-.price span{font-size:1.5rem;color:#a0a0a0}
-footer{text-align:center;padding:40px;color:#666}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;display:flex;flex-direction:column;align-items:center}
+.hero{width:100%;max-width:900px;padding:80px 20px 60px;text-align:center}
+h1{font-size:2.8rem;margin-bottom:16px;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.3}
+.tagline{color:#999;font-size:1.1rem;margin-bottom:40px;line-height:1.6}
+.cta-btn{display:inline-block;padding:16px 40px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:8px;color:#fff;font-size:1.1rem;font-weight:600;text-decoration:none;cursor:pointer;transition:transform 0.2s,opacity 0.2s}
+.cta-btn:hover{transform:translateY(-2px);opacity:0.9}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;width:100%;max-width:900px;padding:0 20px 80px}
+.feature-card{background:#161b22;border:1px solid #2a2a3a;border-radius:16px;padding:28px;text-align:left;transition:border-color 0.2s}
+.feature-card:hover{border-color:#667eea}
+.feature-icon{font-size:2rem;margin-bottom:12px}
+.feature-card h3{color:#e0e0e0;font-size:1.1rem;margin-bottom:8px}
+.feature-card p{color:#888;font-size:0.9rem;line-height:1.6}
+.benefits{width:100%;max-width:900px;padding:0 20px 80px}
+.benefits h2{text-align:center;font-size:1.8rem;margin-bottom:40px;color:#e0e0e0}
+.benefit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.benefit-item{background:#161b22;border:1px solid #2a2a3a;border-radius:12px;padding:24px;text-align:center}
+.benefit-item .num{font-size:2rem;font-weight:700;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.benefit-item .label{color:#888;font-size:0.85rem;margin-top:6px}
+.footer{color:#555;font-size:0.8rem;padding:40px 20px;text-align:center}
 </style>
 </head>
 <body>
-<section class="hero">
-<h1>YouTube爆款标题生成器</h1>
-<p>DeepSeek AI驱动 | 10秒生成10条爆款标题 | 5个热门选题建议</p >
-免费使用
-</section>
-<section class="features">
-<div class="feature">
-<div class="feature-icon">🎯</div>
-<h3>精准定位</h3>
-<p>基于AI分析热门视频规律，生成高点击率标题</p >
+<div class="hero">
+<h1>YouTube创作者工具箱</h1>
+<p class="tagline">4大AI工具，从标题到脚本一站式搞定<br/>DeepSeek驱动 · 免费使用 · 无需注册</p>
+<a class="cta-btn" href="/youtube-generator/index.html">🚀 立即使用</a>
 </div>
-<div class="feature">
-<div class="feature-icon">⚡</div>
-<h3>快速生成</h3>
-<p>10秒生成10条爆款标题，节省90%创作时间</p >
-</div>
-<div class="feature">
-<div class="feature-icon">📊</div>
-<h3>选题建议</h3>
-<p>提供5个相关选题，扩展内容创作思路</p >
-</div>
-<div class="feature">
-<div class="feature-icon">🔒</div>
-<h3>安全可靠</h3>
-<p>API密钥仅在本地浏览器使用，不会上传服务器</p >
-</div>
-<div class="feature">
-<div class="feature-icon">🎨</div>
-<h3>专业设计</h3>
-<p>界面简洁美观，操作直观易懂</p >
-</div>
-<div class="feature">
-<div class="feature-icon">💡</div>
-<h3>持续更新</h3>
-<p>根据平台算法持续优化，紧跟趋势</p >
-</div>
-</section>
-<section class="pricing">
-<h2>定价方案</h2>
-<div class="price">¥0 <span>/ 永久免费</span></div>
-<p>基础功能全部免费 | 无隐藏费用 | 无需注册</p >
 
-</section>
-<footer>
-<p>© 2025 YouTube爆款标题生成器 | 由DeepSeek驱动</p >
-</footer>
+<div class="features">
+<div class="feature-card">
+<div class="feature-icon">🎯</div>
+<h3>爆款标题生成</h3>
+<p>AI分析爆款规律，为你生成10个吸引眼球的标题+5个差异化选题建议，告别标题焦虑。</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">🏷️</div>
+<h3>SEO标签优化</h3>
+<p>智能生成35个精准标签：核心标签+长尾标签+趋势标签，一键复制直接粘贴到YouTube。</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">🖼️</div>
+<h3>AI缩略图生成</h3>
+<p>6种风格可选（电影感/大字报/人物特写等），AI自动生成吸睛缩略图，也可导出提示词到其他工具。</p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">📝</div>
+<h3>视频脚本大纲</h3>
+<p>输入主题和时长，AI生成完整脚本大纲：钩子开头+分段时间轴+要点+号召行动，让创作效率翻倍。</p>
+</div>
+</div>
+
+<div class="benefits">
+<h2>为什么选择我们？</h2>
+<div class="benefit-grid">
+<div class="benefit-item">
+<div class="num">0</div>
+<div class="label">元 · 完全免费</div>
+</div>
+<div class="benefit-item">
+<div class="num">4</div>
+<div class="label">大AI工具</div>
+</div>
+<div class="benefit-item">
+<div class="num">100%</div>
+<div class="label">浏览器运行 · 隐私安全</div>
+</div>
+<div class="benefit-item">
+<div class="num">∞</div>
+<div class="label">无使用次数限制</div>
+</div>
+</div>
+</div>
+
+<div class="footer">
+<p>由DeepSeek AI驱动 · 为YouTube创作者而生</p>
+</div>
 </body>
 </html>
