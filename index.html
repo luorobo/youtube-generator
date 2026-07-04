@@ -274,7 +274,8 @@ function switchTab(tab){
 ['titles','tags','thumb','script'].forEach(t=>{
 document.getElementById('tab-'+t).classList.toggle('active',t===tab);
 document.getElementById('panel-'+t).style.display=t===tab?'block':'none';
-document.getElementById('results-'+t).classList.remove('active');
+var resultsEl = document.getElementById('results-'+t);
+if(resultsEl) resultsEl.classList.remove('active');
 });
 document.getElementById('loading').classList.remove('active');
 }
