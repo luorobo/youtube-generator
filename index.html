@@ -196,21 +196,21 @@ footer{color:#555;font-size:0.8rem;margin-top:40px}
 <div class="section">
 <h2>🎯 核心标签（高搜索量）</h2>
 <ul class="tags-group" id="coreTags"></ul>
-<button class="copy-all-btn" onclick="copyAll('core')">📋 复制全部核心标签</button>
+<button class="copy-all-btn" onclick="copyAll('core',this)">📋 复制全部核心标签</button>
 </div>
 <div class="section">
 <h2>🔍 长尾标签（低竞争）</h2>
 <ul class="tags-group" id="longTailTags"></ul>
-<button class="copy-all-btn" onclick="copyAll('longTail')">📋 复制全部标签</button>
+<button class="copy-all-btn" onclick="copyAll('longTail',this)">📋 复制全部标签</button>
 </div>
 <div class="section">
 <h2>🚀 趋势标签（近期热门）</h2>
 <ul class="tags-group" id="trendTags"></ul>
-<button class="copy-all-btn" onclick="copyAll('trend')">📋 复制全部标签</button>
+<button class="copy-all-btn" onclick="copyAll('trend',this)">📋 复制全部标签</button>
 </div>
 <div class="section" style="margin-top:32px;padding:20px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px">
 <h2 style="border:none;padding:0;margin-bottom:12px">📦 一键复制全部标签</h2>
-<button class="copy-all-btn" onclick="copyAll('all')" style="width:100%;padding:14px;font-size:1rem;font-weight:600;background:linear-gradient(135deg,#667eea,#764ba2);border:none;color:#fff">复制全部标签到剪贴板</button>
+<button class="copy-all-btn" onclick="copyAll('all',this)" style="width:100%;padding:14px;font-size:1rem;font-weight:600;background:linear-gradient(135deg,#667eea,#764ba2);border:none;color:#fff">复制全部标签到剪贴板</button>
 <div class="hint" style="margin-top:10px;color:#888">直接粘贴到YouTube视频标签框即可</div>
 </div>
 </div>
@@ -238,7 +238,7 @@ footer{color:#555;font-size:0.8rem;margin-top:40px}
 <!-- Results: 视频脚本 -->
 <div class="results" id="results-script">
 <div class="section" style="margin-bottom:20px">
-<button class="copy-all-btn" onclick="copyScriptAll()" style="float:right">📋 复制全部脚本</button>
+<button class="copy-all-btn" onclick="copyScriptAll(this)" style="float:right">📋 复制全部脚本</button>
 <h2>📝 视频脚本大纲</h2>
 </div>
 <div id="scriptOutput"></div>
@@ -300,6 +300,7 @@ async function generate(){
 const apiKey=document.getElementById('apiKey').value.trim();
 const topic=document.getElementById('topic').value.trim();
 if(!apiKey){showError('error-titles','请输入API Key');return;}
+if(!apiKey.startsWith('sk-')){showError('error-titles','API Key格式错误，应以sk-开头');return;}
 if(!topic){showError('error-titles','请输入视频主题');return;}
 document.getElementById('error-titles').style.display='none';
 document.getElementById('loading-text').textContent='AI正在生成爆款标题...';
@@ -331,6 +332,7 @@ async function generateTags(){
 const apiKey=document.getElementById('apiKey-tags').value.trim();
 const topic=document.getElementById('topic-tags').value.trim();
 if(!apiKey){showError('error-tags','请输入API Key');return;}
+if(!apiKey.startsWith('sk-')){showError('error-tags','API Key格式错误，应以sk-开头');return;}
 if(!topic){showError('error-tags','请输入视频主题');return;}
 document.getElementById('error-tags').style.display='none';
 document.getElementById('loading-text').textContent='AI正在生成SEO标签...';
@@ -365,6 +367,7 @@ const topic=document.getElementById('topic-thumb').value.trim();
 const style=document.getElementById('style-thumb').value;
 const mode=document.getElementById('mode-thumb').value;
 if(!apiKey){showError('error-thumb','请输入API Key');return;}
+if(!apiKey.startsWith('sk-')){showError('error-thumb','API Key格式错误，应以sk-开头');return;}
 if(!topic){showError('error-thumb','请输入视频主题');return;}
 document.getElementById('error-thumb').style.display='none';
 document.getElementById('loading-text').textContent='AI正在设计缩略图...';
@@ -439,6 +442,7 @@ const topic=document.getElementById('topic-script').value.trim();
 const length=document.getElementById('length-script').value;
 const type=document.getElementById('type-script').value;
 if(!apiKey){showError('error-script','请输入API Key');return;}
+if(!apiKey.startsWith('sk-')){showError('error-script','API Key格式错误，应以sk-开头');return;}
 if(!topic){showError('error-script','请输入视频主题');return;}
 document.getElementById('error-script').style.display='none';
 document.getElementById('loading-text').textContent='AI正在撰写视频脚本...';
@@ -484,7 +488,7 @@ document.getElementById('scriptOutput').innerHTML=html;
 document.getElementById('results-script').classList.add('active');
 }
 
-function copyScriptAll(){
+function copyScriptAll(btn){
 if(!currentScriptData)return;
 let text='';
 const d=currentScriptData;
@@ -493,10 +497,7 @@ if(d.hook)text+='🪝 开头钩子:\n"'+d.hook+'"\n\n';
 if(d.sections)d.sections.forEach(s=>{text+='⏱️ '+s.time+' - '+s.heading+'\n';if(s.points)s.points.forEach(p=>{text+='  • '+p+'\n';});text+='\n';});
 if(d.cta)text+='📢 号召行动:\n'+d.cta+'\n\n';
 if(d.seo_keywords)text+='🔑 SEO关键词: '+d.seo_keywords.join(', ');
-navigator.clipboard.writeText(text).then(()=>{
-const btn=event.target;btn.classList.add('copied');const orig=btn.textContent;
-btn.textContent='✓ 已复制!';setTimeout(()=>{btn.classList.remove('copied');btn.textContent=orig;},2000);
-});
+navigator.clipboard.writeText(text).then(()=>{btn.classList.add('copied');const orig=btn.textContent;btn.textContent='✓ 已复制!';setTimeout(()=>{btn.classList.remove('copied');btn.textContent=orig;},2000);});
 }
 
 function displayResults(titles,topics){
@@ -522,13 +523,12 @@ function copy(el,text){
 navigator.clipboard.writeText(text).then(()=>{el.classList.add('copied');const orig=el.textContent;el.textContent='✓ 已复制!';setTimeout(()=>{el.textContent=orig;el.classList.remove('copied');},1500);});
 }
 
-function copyAll(type){
+function copyAll(type,btn){
 let text='';
 if(type==='core')text=allTags.core.join(', ');
 else if(type==='longTail')text=allTags.longTail.join(', ');
 else if(type==='trend')text=allTags.trend.join(', ');
 else if(type==='all')text=[...allTags.core,...allTags.longTail,...allTags.trend].join(', ');
-const btn=event.target;
 navigator.clipboard.writeText(text).then(()=>{btn.classList.add('copied');const orig=btn.textContent;btn.textContent='✓ 已复制到剪贴板!';setTimeout(()=>{btn.classList.remove('copied');btn.textContent=orig;},2000);});
 }
 
