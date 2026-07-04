@@ -3,20 +3,24 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>YouTube爆款标题生成器 - DeepSeek驱动</title>
+<title>YouTube创作者工具箱 - 爆款标题 + SEO标签</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
 .container{width:min(680px,100%);text-align:center}
 h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.subtitle{color:#888;margin-bottom:30px}
+.subtitle{color:#888;margin-bottom:24px;font-size:0.95rem}
+.tabs{display:flex;gap:0;margin-bottom:24px;border-radius:12px;overflow:hidden;border:1px solid #2a2a3a}
+.tab{flex:1;padding:14px 20px;background:#161b22;color:#888;font-size:0.95rem;font-weight:500;cursor:pointer;border:none;transition:all 0.2s}
+.tab:hover{background:#1a1f2a;color:#c0c0c0}
+.tab.active{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
 .card{background:#161b22;border:1px solid #2a2a3a;border-radius:16px;padding:28px;text-align:left;width:100%}
 .input-group{margin-bottom:20px}
 label{display:block;color:#c0c0c0;font-size:0.9rem;margin-bottom:8px;font-weight:500}
 input{width:100%;padding:14px 16px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;color:#fff;font-size:1rem;outline:none}
 input:focus{border-color:#667eea}
 .hint{color:#666;font-size:0.8rem;margin-top:6px}
-.btn{width:100%;padding:16px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:8px;color:#fff;font-size:1rem;font-weight:600;cursor:pointer}
+.btn{width:100%;padding:16px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:8px;color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:opacity 0.2s}
 .btn:hover{opacity:0.9}
 .btn:disabled{opacity:0.5;cursor:not-allowed}
 .error{background:#2a1a1a;border:1px solid #f00;border-radius:8px;padding:14px;color:#f66;text-align:left;display:none;margin-bottom:16px}
@@ -28,18 +32,25 @@ input:focus{border-color:#667eea}
 .results.active{display:block}
 .section{margin-bottom:24px}
 .section h2{color:#c0c0c0;font-size:1rem;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #2a2a3a}
-.titles-list li,.topics-list li{padding:12px 16px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all 0.2s}
-.titles-list li:hover,.topics-list li:hover{background:#1a1a2a;border-color:#667eea}
-.titles-list li.copied,.topics-list li.copied{background:#238636;border-color:#238636}
+.titles-list li,.topics-list li,.tags-group li{padding:12px 16px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all 0.2s}
+.titles-list li:hover,.topics-list li:hover,.tags-group li:hover{background:#1a1a2a;border-color:#667eea}
+.titles-list li.copied,.topics-list li.copied,.tags-group li.copied{background:#238636;border-color:#238636}
+.copy-all-btn{margin-top:12px;padding:12px 20px;background:#161b22;border:1px solid #2a2a3a;border-radius:8px;color:#c0c0c0;font-size:0.9rem;cursor:pointer;transition:all 0.2s;width:auto}
+.copy-all-btn:hover{background:#1a1f2a;border-color:#667eea;color:#fff}
+.copy-all-btn.copied{background:#238636;border-color:#238636;color:#fff}
 footer{color:#555;font-size:0.8rem;margin-top:40px}
 </style>
 </head>
 <body>
 <div class="container">
-<h1>YouTube爆款标题生成器</h1>
-<p class="subtitle">DeepSeek驱动 · 10条标题 + 5个选题</p >
-<div class="card">
-<div class="error" id="error"></div>
+<h1>YouTube创作者工具箱</h1>
+<p class="subtitle">DeepSeek驱动 · 爆款标题 + SEO标签 · 一站式搞定</p>
+<div class="tabs">
+<button class="tab active" onclick="switchTab('titles')" id="tab-titles">🎯 爆款标题</button>
+<button class="tab" onclick="switchTab('tags')" id="tab-tags">🏷️ SEO标签</button>
+</div>
+<div id="panel-titles" class="card">
+<div class="error" id="error-titles"></div>
 <div class="input-group">
 <label>DeepSeek API Key</label>
 <input type="password" id="apiKey" placeholder="sk-..."/>
@@ -51,78 +62,68 @@ footer{color:#555;font-size:0.8rem;margin-top:40px}
 </div>
 <button class="btn" id="generateBtn" onclick="generate()">生成爆款标题与选题</button>
 </div>
+<div id="panel-tags" class="card" style="display:none">
+<div class="error" id="error-tags"></div>
+<div class="input-group">
+<label>DeepSeek API Key</label>
+<input type="password" id="apiKey-tags" placeholder="sk-..."/>
+<div class="hint">密钥仅在您的浏览器中使用，安全可靠</div>
+</div>
+<div class="input-group">
+<label>视频主题/关键词</label>
+<input type="text" id="topic-tags" placeholder="例如：iPhone 16评测、Python入门教程"/>
+</div>
+<button class="btn" id="generateBtn-tags" onclick="generateTags()">生成SEO标签</button>
+</div>
 <div class="loading" id="loading">
 <div class="spinner"></div>
-<p>AI正在思考中...</p >
+<p>AI正在思考中...</p>
 </div>
 <div class="results" id="results">
 <div class="section">
-<h2>爆款标题</h2>
+<h2>🔥 爆款标题</h2>
 <ul class="titles-list" id="titlesList"></ul>
 </div>
 <div class="section">
-<h2>选题建议</h2>
+<h2>📌 选题建议</h2>
 <ul class="topics-list" id="topicsList"></ul>
 </div>
 </div>
+<div class="results" id="results-tags">
+<div class="section">
+<h2>🎯 核心标签（高搜索量）</h2>
+<ul class="tags-group" id="coreTags"></ul>
+<button class="copy-all-btn" onclick="copyAll('core')">📋 复制全部核心标签</button>
 </div>
-<footer>由DeepSeek驱动 · 为创作者而生</footer>
+<div class="section">
+<h2>🔍 长尾标签（低竞争）</h2>
+<ul class="tags-group" id="longTailTags"></ul>
+<button class="copy-all-btn" onclick="copyAll('longTail')">📋 复制全部标签</button>
+</div>
+<div class="section">
+<h2>🚀 趋势标签（近期热门）</h2>
+<ul class="tags-group" id="trendTags"></ul>
+<button class="copy-all-btn" onclick="copyAll('trend')">📋 复制全部标签</button>
+</div>
+<div class="section" style="margin-top:32px;padding:20px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px">
+<h2 style="border:none;padding:0;margin-bottom:12px">📦 一键复制全部标签</h2>
+<button class="copy-all-btn" onclick="copyAll('all')" style="width:100%;padding:14px;font-size:1rem;font-weight:600;background:linear-gradient(135deg,#667eea,#764ba2);border:none;color:#fff">复制全部标签到剪贴板</button>
+<div class="hint" style="margin-top:10px;color:#888">直接粘贴到YouTube视频标签框即可</div>
+</div>
+</div>
+</div>
+<footer>由DeepSeek驱动 · 为YouTube创作者而生</footer>
 <script>
-function extractJson(text){
-if(!text)return null;
-const start=text.indexOf('{');
-if(start===-1)return null;
-let depth=0,escaped=false,inStr=false;
-for(let i=start;i<text.length;i++){
-const ch=text[i];
-if(escaped){escaped=false;continue;}
-if(ch==='\\'){escaped=true;continue;}
-if(!inStr&&ch=='"'){inStr=true;continue;}
-if(inStr&&ch=='"'){inStr=false;continue;}
-if(!inStr){
-if(ch==='{')depth++;
-else if(ch==='}'){depth--;if(depth===0)return text.substring(start,i+1);}
-}
-}
-return null;
-}
-async function generate(){
-const apiKey=document.getElementById('apiKey').value.trim();
-const topic=document.getElementById('topic').value.trim();
-if(!apiKey){showError('请输入API Key');return;}
-if(!topic){showError('请输入视频主题');return;}
-document.getElementById('error').style.display='none';
-document.getElementById('loading').classList.add('active');
-document.getElementById('results').classList.remove('active');
-document.getElementById('generateBtn').disabled=true;
-try{
-const response=await fetch('https://api.deepseek.com/v1/chat/completions',{
-method:'POST',
-headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
-body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:'你是YouTube内容策划专家。返回JSON格式：{"titles":["标题1",...],"topics":["选题1",...]}，titles10个，topics5个。'},{role:'user',content:'为"'+topic+'"生成10个YouTube爆款标题和5个选题建议。'}],max_tokens:4096})
-});
-if(!response.ok)throw new Error('API请求失败');
-const data=await response.json();
-const content=data.choices?.[0]?.message?.content;
-if(!content)throw new Error('返回内容为空');
-const json=extractJson(content);
-if(!json)throw new Error('解析失败');
-const parsed=JSON.parse(json);
-displayResults(parsed.titles||[],parsed.topics||[]);
-}catch(e){showError(e.message);}
-finally{document.getElementById('loading').classList.remove('active');document.getElementById('generateBtn').disabled=false;}
-}
-function displayResults(titles,topics){
-document.getElementById('titlesList').innerHTML='';
-document.getElementById('topicsList').innerHTML='';
-titles.forEach((t,i)=>{const li=document.createElement('li');li.textContent=(i+1)+'. '+t;li.onclick=function(){copy(this,t);};document.getElementById('titlesList').appendChild(li);});
-topics.forEach(t=>{const li=document.createElement('li');li.textContent='📌 '+t;li.onclick=function(){copy(this,t);};document.getElementById('topicsList').appendChild(li);});
-document.getElementById('results').classList.add('active');
-}
-function copy(el,text){
-navigator.clipboard.writeText(text).then(()=>{el.classList.add('copied');const orig=el.textContent;el.textContent='已复制!';setTimeout(()=>{el.textContent=orig;el.classList.remove('copied');},1500);});
-}
-function showError(msg){document.getElementById('error').textContent=msg;document.getElementById('error').style.display='block';}
+let allTags={core:[],longTail:[],trend:[]};
+function extractJson(text){if(!text)return null;const start=text.indexOf('{');if(start===-1)return null;let depth=0,escaped=false,inStr=false;for(let i=start;i<text.length;i++){const ch=text[i];if(escaped){escaped=false;continue;}if(ch==='\\'){escaped=true;continue;}if(!inStr&&ch==='"'){inStr=true;continue;}if(inStr&&ch==='"'&&!escaped){inStr=false;continue;}if(!inStr){if(ch==='{')depth++;else if(ch==='}'){depth--;if(depth===0)return text.substring(start,i+1);}}}return null;}
+function switchTab(tab){document.getElementById('tab-titles').classList.toggle('active',tab==='titles');document.getElementById('tab-tags').classList.toggle('active',tab==='tags');document.getElementById('panel-titles').style.display=tab==='titles'?'block':'none';document.getElementById('panel-tags').style.display=tab==='tags'?'block':'none';document.getElementById('results').classList.remove('active');document.getElementById('results-tags').classList.remove('active');document.getElementById('loading').classList.remove('active');}
+async function generate(){const apiKey=document.getElementById('apiKey').value.trim();const topic=document.getElementById('topic').value.trim();if(!apiKey){showError('error-titles','请输入API Key');return;}if(!topic){showError('error-titles','请输入视频主题');return;}document.getElementById('error-titles').style.display='none';document.getElementById('loading').classList.add('active');document.getElementById('results').classList.remove('active');document.getElementById('generateBtn').disabled=true;try{const response=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:'你是YouTube内容策划专家。返回JSON格式：{"titles":["标题1",...],"topics":["选题1",...]}，titles生成10个爆款标题，topics生成5个选题建议。'},{role:'user',content:'为"'+topic+'"生成10个YouTube爆款标题和5个选题建议。'}],max_tokens:4096,response_format:{type:'json_object'}})});if(!response.ok)throw new Error('API请求失败，请检查Key是否正确');const data=await response.json();const content=data.choices?.[0]?.message?.content;if(!content)throw new Error('返回内容为空');const json=extractJson(content);if(!json)throw new Error('解析失败');const parsed=JSON.parse(json);displayResults(parsed.titles||[],parsed.topics||[]);}catch(e){showError('error-titles',e.message);}finally{document.getElementById('loading').classList.remove('active');document.getElementById('generateBtn').disabled=false;}}
+async function generateTags(){const apiKey=document.getElementById('apiKey-tags').value.trim();const topic=document.getElementById('topic-tags').value.trim();if(!apiKey){showError('error-tags','请输入API Key');return;}if(!topic){showError('error-tags','请输入视频主题');return;}document.getElementById('error-tags').style.display='none';document.getElementById('loading').classList.add('active');document.getElementById('results-tags').classList.remove('active');document.getElementById('generateBtn-tags').disabled=true;try{const response=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:'你是YouTube SEO专家。返回JSON格式：{"core":["标签1","标签2",...],"longTail":["标签1","标签2",...],"trend":["标签1","标签2",...]}。core生成10个核心高搜索量标签，longTail生成15个长尾低竞争标签，trend生成10个趋势热门标签。所有标签必须是英文。'},{role:'user',content:'为"'+topic+'"生成YouTube SEO标签。'}],max_tokens:4096,response_format:{type:'json_object'}})});if(!response.ok)throw new Error('API请求失败，请检查Key是否正确');const data=await response.json();const content=data.choices?.[0]?.message?.content;if(!content)throw new Error('返回内容为空');const json=extractJson(content);if(!json)throw new Error('解析失败');const parsed=JSON.parse(json);allTags={core:parsed.core||[],longTail:parsed.longTail||[],trend:parsed.trend||[]};displayTags(allTags.core,allTags.longTail,allTags.trend);}catch(e){showError('error-tags',e.message);}finally{document.getElementById('loading').classList.remove('active');document.getElementById('generateBtn-tags').disabled=false;}}
+function displayResults(titles,topics){document.getElementById('titlesList').innerHTML='';document.getElementById('topicsList').innerHTML='';titles.forEach((t,i)=>{const li=document.createElement('li');li.textContent=(i+1)+'. '+t;li.onclick=function(){copy(this,t);};document.getElementById('titlesList').appendChild(li);});topics.forEach(t=>{const li=document.createElement('li');li.textContent='📌 '+t;li.onclick=function(){copy(this,t);};document.getElementById('topicsList').appendChild(li);});document.getElementById('results').classList.add('active');}
+function displayTags(core,longTail,trend){document.getElementById('coreTags').innerHTML='';document.getElementById('longTailTags').innerHTML='';document.getElementById('trendTags').innerHTML='';core.forEach(t=>{const li=document.createElement('li');li.textContent=t;li.onclick=function(){copy(this,t);};document.getElementById('coreTags').appendChild(li);});longTail.forEach(t=>{const li=document.createElement('li');li.textContent=t;li.onclick=function(){copy(this,t);};document.getElementById('longTailTags').appendChild(li);});trend.forEach(t=>{const li=document.createElement('li');li.textContent=t;li.onclick=function(){copy(this,t);};document.getElementById('trendTags').appendChild(li);});document.getElementById('results-tags').classList.add('active');document.querySelectorAll('.copy-all-btn').forEach(btn=>{btn.classList.remove('copied');});}
+function copy(el,text){navigator.clipboard.writeText(text).then(()=>{el.classList.add('copied');const orig=el.textContent;el.textContent='✓ 已复制!';setTimeout(()=>{el.textContent=orig;el.classList.remove('copied');},1500);});}
+function copyAll(type){let text='';if(type==='core')text=allTags.core.join(', ');else if(type==='longTail')text=allTags.longTail.join(', ');else if(type==='trend')text=allTags.trend.join(', ');else if(type==='all')text=[...allTags.core,...allTags.longTail,...allTags.trend].join(', ');const btn=event.target;navigator.clipboard.writeText(text).then(()=>{btn.classList.add('copied');const orig=btn.textContent;btn.textContent='✓ 已复制到剪贴板!';setTimeout(()=>{btn.classList.remove('copied');btn.textContent=orig;},2000);});}
+function showError(id,msg){document.getElementById(id).textContent=msg;document.getElementById(id).style.display='block';}
 </script>
 </body>
 </html>
